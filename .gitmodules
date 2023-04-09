@@ -1,0 +1,15 @@
+[submodule "modules/fx68k"]
+	path = modules/fx68k
+	url = https://github.com/JTFPGA/fx68k
+[submodule "modules/jt51"]
+	path = modules/jt51
+	url = https://github.com/jotego/jt51
+[submodule "modules/jt6295"]
+	path = modules/jt6295
+	url = https://github.com/jotego/jt6295
+[submodule "modules/jt8255"]
+	path = modules/jt8255
+	url = https://github.com/jotego/jt8255
+[submodule "modules/jtframe"]
+	path = modules/jtframe
+	url = https://github.com/jotego/jtframe
