@@ -1,6 +1,6 @@
 #demistify
 #find ../firmware/ -type f \( ! -iname "config.h" ! -iname "overrides.c" \) -delete
-rm -f PCXT_*
+rm -f jtoutrun_*
 #quartus
 find output_files/ -type f \( ! -iname "*.sof" ! -iname "*.svf" ! -iname "*.flow.rpt" \) -delete
 rm -f output_files/*_pof.svf
