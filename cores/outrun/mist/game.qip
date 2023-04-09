@@ -149,7 +149,7 @@ set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/video/jtfr
 set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/target/mist/data_io.v
 set_global_assignment -name SYSTEMVERILOG_FILE ../../../modules/jtframe/target/mist/jtframe_mist.sv
 set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/target/mist/jtframe_mist_base.v
-set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/target/mist/jtframe_mist_clocks.v
+#set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/target/mist/jtframe_mist_clocks.v
 set_global_assignment -name SYSTEMVERILOG_FILE ../../../modules/jtframe/target/mist/jtframe_mist_top.sv
 set_global_assignment -name SDC_FILE ../../../modules/jtframe/target/mist/mist_io.sdc
 set_global_assignment -name SYSTEMVERILOG_FILE ../../../modules/jtframe/target/mist/osd.sv
@@ -168,3 +168,5 @@ set_global_assignment -name VHDL_FILE ../../../modules/jtframe/hdl/cpu/t80/T80_M
 set_global_assignment -name VHDL_FILE ../../../modules/jtframe/hdl/cpu/t80/T80_ALU.vhd
 set_global_assignment -name VHDL_FILE ../../../modules/jtframe/hdl/cpu/t80/T80.vhd
 set_global_assignment -name VERILOG_FILE ../mist/jtoutrun_game_sdram.v
+set_global_assignment -name VERILOG_FILE jtframe_mist_clocks.v
+
