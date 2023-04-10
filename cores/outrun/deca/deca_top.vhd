@@ -155,6 +155,15 @@ architecture RTL of deca_top is
 	signal joyc : std_logic_vector(7 downto 0);
 	signal joyd : std_logic_vector(7 downto 0);
 
+	-- -- jtframe_mist
+	-- component jtframe_mist
+	-- 	port (
+	-- 		-- I2S sound
+	-- 		snd_left  	:  signed(15 downto 0);
+	-- 		snd_right   :  signed(15 downto 0)
+	-- 	);
+	-- end component;
+
 	-- DAC AUDIO
 	signal dac_l : signed(15 downto 0);
 	signal dac_r : signed(15 downto 0);
@@ -337,6 +346,13 @@ begin
 	-- HDMI_LRCLK  <= i2s_Lr_o;
 	-- HDMI_I2S(0) <= i2s_D_o;
 
+
+	-- u_frame2 : component jtframe_mist
+	-- 	port map (
+	-- 		-- I2S sound
+	-- 		snd_left    =>   dac_l,
+	-- 		snd_right   =>   dac_r
+	-- 	);
 
 	guest : component mist_top
 		port map
