@@ -8,9 +8,6 @@ use work.demistify_config_pkg.all;
 -------------------------------------------------------------------------
 
 entity deca_top is
-	generic (
-		DECA_KEYB: natural := 1  -- 1=PS2 INOUT, 2= USB LOW SPEED (BETA)
-	);
 	port (
 		ADC_CLK_10    : in std_logic;
 		MAX10_CLK1_50 : in std_logic;
@@ -100,18 +97,8 @@ entity deca_top is
 		I2S_D            : out std_logic;
 
 		--Switches 
-		SW 			: in std_logic_vector(1 downto 0);
-		-- Toggle leds in USB keyboard SW[0] LedCaps	SW[1] LedNum
+		SW 			: in std_logic_vector(1 downto 0)
 
-		--TUSB1210
-		USB_CLKIN 	: in std_logic;     	--60MHz from ULPI
-		USB_FAULT_n	: in std_logic;    		--Overcurrent
-		USB_DATA 	: inout std_logic_vector(7 downto 0);
-		USB_NXT 	: in std_logic;
-		USB_DIR 	: in std_logic;
-		USB_STP 	: out std_logic;
-		USB_RESET_n : out std_logic;    	--Fixed to High
-		USB_CS 		: out std_logic        	--Fixed to High
 	);
 END entity;
 
@@ -232,39 +219,6 @@ architecture RTL of deca_top is
 	signal vga_x_hs  : std_logic;
 	signal vga_x_vs  : std_logic;
 
-	-- USB ULPI KEYBOARD
-	signal USB_CLK_PHASE  : std_logic;
-	signal USB_PLL_LOCKED : std_logic;
-	signal PS2_KEYBOARD_CLK_USB : std_logic := '1';
-	signal PS2_KEYBOARD_DAT_USB : std_logic := '1';
-
-	component PLL_PHASE90
-		port (
-			inclk0 : in std_logic;
-			c0     : out std_logic;
-			locked : out std_logic
-		);
-	end component;
-
-	-- https://github.com/TheSonders/USBKeyboard/blob/main/ULPI_PS2_PUBLIC.v
-	component ULPI_PS2
-		port (
-			clk 		: in std_logic;
-			LedNum 		: in std_logic;
-			LedCaps 	: in std_logic;
-			LedScroll 	: in std_logic;
-			PS2data 	: out std_logic;
-			PS2clock 	: out std_logic;
-			FAULT_n 	: in std_logic;
-			DATA 		: inout std_logic_vector  (7 downto 0);
-			NXT 		: in std_logic;
-			DIR 		: in std_logic;
-			STP 		: out std_logic;
-			RESET_n 	: out std_logic;
-			CS 			: out std_logic
-		);
-	end component;
-
 	signal act_led : std_logic;
 
 	-- DECA target guest_top template signals
@@ -288,48 +242,10 @@ begin
 	ps2_mouse_clk_in <= PS2_MOUSE_CLK;
 	PS2_MOUSE_CLK    <= '0' when ps2_mouse_clk_out = '0' else 'Z';
 
-	-- DECA_KEYB:  1=PS2 INOUT, 2= PS2 & USB LOW SPEED
-	KEYBOARD_1 : if DECA_KEYB = 1 generate -- KEYB PS2 INOUT
-		ps2_keyboard_dat_in <= PS2_KEYBOARD_DAT;
-		PS2_KEYBOARD_DAT    <= '0' when ps2_keyboard_dat_out = '0' else 'Z';
-		ps2_keyboard_clk_in <= PS2_KEYBOARD_CLK;
-		PS2_KEYBOARD_CLK    <= '0' when ps2_keyboard_clk_out = '0' else 'Z';
-		USB_PLL_LOCKED      <= '1';
-	end generate KEYBOARD_1;
-
-	KEYBOARD_2 : if DECA_KEYB = 2 generate -- KEYB USB LOW SPEED 
-		ps2_keyboard_dat_in <= PS2_KEYBOARD_DAT_USB;
---		PS2_KEYBOARD_DAT    <= '0' when ps2_keyboard_dat_out = '0' else 'Z';
-		ps2_keyboard_clk_in <= PS2_KEYBOARD_CLK_USB;
---		PS2_KEYBOARD_CLK    <= '0' when ps2_keyboard_clk_out = '0' else 'Z';
-	
-		-- PLL ULPI_PS2
-		PLL_PHASE90_inst : PLL_PHASE90
-		port map (
-			inclk0		=> USB_CLKIN,
-			c0			=> USB_CLK_PHASE,		
-			locked		=> USB_PLL_LOCKED
-		);
-
-		-- ULPI_PS2
-		ULPI_PS2_inst : ULPI_PS2
-		port map (
-			clk 		=> USB_CLK_PHASE,
-			LedNum 		=> SW(1),
-			LedCaps 	=> SW(0),
-			LedScroll 	=> '0',
-			PS2data 	=> PS2_KEYBOARD_DAT_USB,
-			PS2clock 	=> PS2_KEYBOARD_CLK_USB,
-			FAULT_n 	=> USB_FAULT_n,
-			DATA 		=> USB_DATA,
-			NXT 		=> USB_NXT,
-			DIR 		=> USB_DIR,
-			STP 		=> USB_STP,
-			RESET_n 	=> USB_RESET_n,
-			CS 			=> USB_CS
-		);
-	end generate KEYBOARD_2;
-
+	ps2_keyboard_dat_in <= PS2_KEYBOARD_DAT;
+	PS2_KEYBOARD_DAT    <= '0' when ps2_keyboard_dat_out = '0' else 'Z';
+	ps2_keyboard_clk_in <= PS2_KEYBOARD_CLK;
+	PS2_KEYBOARD_CLK    <= '0' when ps2_keyboard_clk_out = '0' else 'Z';
 	
 	JOYX_SEL_O          <= '1';
 	joya                <= "11" & JOY1_B2_P9 & JOY1_B1_P6 & JOY1_RIGHT & JOY1_LEFT & JOY1_DOWN & JOY1_UP;
@@ -350,7 +266,6 @@ begin
 
 
 	-- DECA AUDIO CODEC
-	
 	RESET_DELAY_n <= reset_n;
 	-- Audio DAC DECA Output assignments
 	AUDIO_GPIO_MFP5  <= '1'; -- GPIO
@@ -491,7 +406,7 @@ begin
 		)
 		port map (
 			clk       => MAX10_CLK1_50,
-			reset_in  => KEY(0) and USB_PLL_LOCKED,		--reset_in  when 0
+			reset_in  => KEY(0),						--reset_in  when 0
 			reset_out => reset_n,						--reset_out when 0
 
 			-- SPI signals
