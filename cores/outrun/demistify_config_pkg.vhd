@@ -69,10 +69,10 @@ constant demistify_serialdebug : std_logic := '0';
 			VGA_B		:	 OUT STD_LOGIC_VECTOR(5 DOWNTO 0);
 
 			AUDIO_L  	: 	 OUT std_logic;
-			AUDIO_R  	: 	 OUT std_logic
+			AUDIO_R  	: 	 OUT std_logic;
 			--D AUDIO 
-			--DAC_L       : out signed(12 downto 0);
-			--DAC_R       : out signed(12 downto 0)   
+			DAC_L       : 	OUT signed(15 downto 0);
+			DAC_R       : 	OUT signed(15 downto 0)   
 		);
 	END COMPONENT;
 	

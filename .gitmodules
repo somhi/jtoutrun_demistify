@@ -12,7 +12,7 @@
 	url = https://github.com/jotego/jt8255
 [submodule "modules/jtframe"]
 	path = modules/jtframe
-	url = https://github.com/jotego/jtframe
+	url = https://github.com/somhi/jtframe
 [submodule "modules/DeMiSTify"]
 	path = modules/DeMiSTify
 	url = https://github.com/robinsonb5/DeMiSTify.git

@@ -8,6 +8,13 @@ DeMiSTified ports from original MiST port of  [jtoutrun](https://github.com/jote
 
 **NOTE 1**: This is an experimental repository to test integration between [jtframe](https://github.com/jotego/jtframe) and [DeMiSTify](https://github.com/robinsonb5/DeMiSTify).  Hopefully most of DeMiSTify targets would be integrated into jtframe at some point.
 
+submodule jtframe is linked to my [fork](https://github.com/somhi/jtframe). I'm using branch demistify so make sure to checkout:
+
+```
+cd modules/DeMiSTify/
+git checkout demistify
+```
+
 
 
 **NOTE 2 (LINE FRAMEBUFFER):**  Ports here do not have a LINE FRAMEBUFFER enabled yet, so they could be played but **contain several video glitches**.
