@@ -1,5 +1,5 @@
 # files inherited from the guest core:
-mist/game.qip
+demistify/game.qip
 
 # The controller module
 ../../modules/DeMiSTify/controller/controller.qip

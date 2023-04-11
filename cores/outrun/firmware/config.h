@@ -73,5 +73,9 @@ here, the number of units defaults to 4. */
 disable the scandoubler. */
 #define CONFIG_AUTOSCANDOUBLER
 
+
+#define CONFIG_ARCFILE_SELECTOR 
+
+
 #endif
 

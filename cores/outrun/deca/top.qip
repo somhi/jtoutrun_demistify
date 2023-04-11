@@ -1,10 +1,9 @@
 #set_global_assignment -name VERILOG_FILE  [file join $::quartus(qip_path) defs.v]
 set_global_assignment -name VHDL_FILE [file join $::quartus(qip_path) deca_top.vhd]
 #
-set_global_assignment -name QIP_FILE [file join $::quartus(qip_path) ../../../modules/jtframe/target/neptuno/pll_neptuno.qip]
+#set_global_assignment -name QIP_FILE [file join $::quartus(qip_path) ../../../modules/jtframe/target/neptuno/pll_neptuno.qip]
 #
 #set_global_assignment -name VERILOG_FILE  [file join $::quartus(qip_path) ../../../modules/jtframe/hdl/video/jtframe_lfbuf_line.v]
 #set_global_assignment -name VERILOG_FILE  [file join $::quartus(qip_path) ../../../modules/jtframe/hdl/video/jtframe_lfbuf_sram.v]
 #set_global_assignment -name VERILOG_FILE  [file join $::quartus(qip_path) ../../../modules/jtframe/hdl/video/jtframe_lfbuf_sram_ctrl.v]
-#
-#source macros.tcl
+
