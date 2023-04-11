@@ -74,7 +74,7 @@ disable the scandoubler. */
 #define CONFIG_AUTOSCANDOUBLER
 
 
-#define CONFIG_ARCFILE_SELECTOR 
+#undef CONFIG_ARCFILE_SELECTOR 
 
 
 #endif
