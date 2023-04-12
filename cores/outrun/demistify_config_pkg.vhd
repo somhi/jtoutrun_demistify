@@ -70,9 +70,14 @@ constant demistify_serialdebug : std_logic := '0';
 
 			AUDIO_L  	: 	 OUT std_logic;
 			AUDIO_R  	: 	 OUT std_logic;
-			--D AUDIO 
-			DAC_L       : 	OUT signed(15 downto 0);
-			DAC_R       : 	OUT signed(15 downto 0)   
+
+			DAC_L       : 	 OUT signed(15 downto 0);
+			DAC_R       : 	 OUT signed(15 downto 0);
+			
+			JOY1		:	 IN STD_LOGIC_VECTOR(5 DOWNTO 0) := "111111";
+			JOY2		:	 IN STD_LOGIC_VECTOR(5 DOWNTO 0) := "111111";
+			JOY_SELECT	:	 OUT STD_LOGIC
+
 		);
 	END COMPONENT;
 	

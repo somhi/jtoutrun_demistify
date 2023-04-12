@@ -247,8 +247,9 @@ begin
 	ps2_keyboard_clk_in <= PS2_KEYBOARD_CLK;
 	PS2_KEYBOARD_CLK    <= '0' when ps2_keyboard_clk_out = '0' else 'Z';
 	
-	JOYX_SEL_O          <= '1';
-	joya                <= "11" & JOY1_B2_P9 & JOY1_B1_P6 & JOY1_RIGHT & JOY1_LEFT & JOY1_DOWN & JOY1_UP;
+	joya                <= "11" & JOY1_B2_P9 & JOY1_B1_P6 & JOY1_UP & JOY1_DOWN & JOY1_LEFT & JOY1_RIGHT;
+	-- JOYX_SEL_O          <= '1';
+	-- joya                <= "11" & JOY1_B2_P9 & JOY1_B1_P6 & JOY1_RIGHT & JOY1_LEFT & JOY1_DOWN & JOY1_UP;
 	joyb                <= (others => '1');
 	joyc                <= (others => '1');
 	joyd                <= (others => '1');
@@ -377,11 +378,16 @@ begin
 			VGA_G      => vga_green(7 downto 2),
 			VGA_B      => vga_blue(7 downto 2),
 
+			--JOYSTICKS
+			JOY1 	   => joya(5 downto 0),
+			JOY2 	   => joyb(5 downto 0),
+			JOY_SELECT => JOYX_SEL_O,
+
 			--AUDIO
-			DAC_L   => dac_l,
-			DAC_R   => dac_r,
-			AUDIO_L => sigma_l,
-			AUDIO_R => sigma_r
+			DAC_L      => dac_l,
+			DAC_R      => dac_r,
+			AUDIO_L    => sigma_l,
+			AUDIO_R    => sigma_r
 
 			--PS2
 			-- PS2K_CLK => ps2_keyboard_clk_in or intercept, -- Block keyboard when OSD is active
@@ -435,8 +441,8 @@ begin
 			buttons => (0 => KEY(1), others => '1'),	-- 0 => OSD_button
 
 			-- Joysticks
-			joy1 => joya,
-			joy2 => joyb,
+		--	joy1 => joya,
+		--	joy2 => joyb,
 
 			-- UART
 			rxd  => rs232_rxd,
