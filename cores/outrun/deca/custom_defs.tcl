@@ -2,7 +2,7 @@
 
 #set_global_assignment -name VERILOG_MACRO "JTFRAME_LF_BUFFER=1"
 
-# NeptUNO also shares the MIST macro
+# DeMiSTify also shares the MIST macro
 set_global_assignment -name VERILOG_MACRO "MIST=1"
 
 # set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to SPI_SCK
@@ -60,5 +60,4 @@ set_global_assignment -name VERILOG_MACRO "ROAD_START='h270000"
 set_global_assignment -name VERILOG_MACRO "SEPARATOR="
 set_global_assignment -name VERILOG_MACRO "SND_START='hC0000"
 
-#set_global_assignment -name VERILOG_MACRO "TARGET=neptuno"
-#set_global_assignment -name VERILOG_MACRO "NEPTUNO=1"
+set_global_assignment -name VERILOG_MACRO "TARGET=demistify"
