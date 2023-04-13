@@ -226,6 +226,8 @@ architecture RTL of deca_top is
 
 	signal act_led : std_logic;
 
+	signal osd_en : std_logic;
+
 	-- DECA target guest_top template signals
 	alias clock_input 	: std_logic is MAX10_CLK1_50;
 	alias audio_input	: std_logic is EAR;	
@@ -408,7 +410,9 @@ begin
 			DAC_L      => dac_l,
 			DAC_R      => dac_r,
 			AUDIO_L    => sigma_l,
-			AUDIO_R    => sigma_r
+			AUDIO_R    => sigma_r,
+
+			OSD_EN	   => osd_en
 
 			--PS2
 			-- PS2K_CLK => ps2_keyboard_clk_in or intercept, -- Block keyboard when OSD is active
@@ -459,7 +463,7 @@ begin
 			ps2m_dat_out => ps2_mouse_dat_out,
 
 			-- Buttons
-			buttons => (0 => KEY(1), others => '1'),	-- 0 => OSD_button
+			buttons => (0 => KEY(1) and (not osd_en), others => '1'),	-- 0 => OSD_button
 
 			-- Joysticks
 			joy1 => joya,

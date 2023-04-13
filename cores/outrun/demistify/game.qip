@@ -150,8 +150,8 @@ set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/target/demisti
 set_global_assignment -name SYSTEMVERILOG_FILE ../../../modules/jtframe/target/demistify/jtframe_mist_top.sv
 set_global_assignment -name QIP_FILE ../../../modules/jtframe/target/demistify/pll2/pll2.qip
 set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/target/mist/data_io.v
-set_global_assignment -name SYSTEMVERILOG_FILE ../../../modules/jtframe/target/mist/jtframe_mist.sv
 #
+set_global_assignment -name SYSTEMVERILOG_FILE ../../../modules/jtframe/target/demistify/jtframe_mist.sv
 set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/target/demistify/jtframe_mist_base.v
 #
 set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/target/demistify/jtframe_neptuno_io.v
