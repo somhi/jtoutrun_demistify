@@ -155,6 +155,11 @@ architecture RTL of deca_top is
 	signal joyc : std_logic_vector(7 downto 0);
 	signal joyd : std_logic_vector(7 downto 0);
 
+	signal joy1 : std_logic_vector(5 downto 0);
+	signal joy2 : std_logic_vector(5 downto 0);
+	signal intercept_joy : std_logic_vector(5 downto 0);
+	signal joy_select_o  : std_logic;
+
 	-- DAC AUDIO
 	signal dac_l : signed(15 downto 0);
 	signal dac_r : signed(15 downto 0);
@@ -247,12 +252,16 @@ begin
 	ps2_keyboard_clk_in <= PS2_KEYBOARD_CLK;
 	PS2_KEYBOARD_CLK    <= '0' when ps2_keyboard_clk_out = '0' else 'Z';
 	
-	joya                <= "11" & JOY1_B2_P9 & JOY1_B1_P6 & JOY1_UP & JOY1_DOWN & JOY1_LEFT & JOY1_RIGHT;
+	-- OSD joystick
 	-- JOYX_SEL_O          <= '1';
-	-- joya                <= "11" & JOY1_B2_P9 & JOY1_B1_P6 & JOY1_RIGHT & JOY1_LEFT & JOY1_DOWN & JOY1_UP;
+	joya                <= "11" & JOY1_B2_P9 & JOY1_B1_P6 & JOY1_RIGHT & JOY1_LEFT & JOY1_DOWN & JOY1_UP;
 	joyb                <= (others => '1');
 	joyc                <= (others => '1');
 	joyd                <= (others => '1');
+
+	-- Core direct joystick
+	joy1                <= JOY1_B2_P9 & JOY1_B1_P6 & JOY1_UP & JOY1_DOWN & JOY1_LEFT & JOY1_RIGHT;
+	joy2                <= (others => '1');
 
 	SD_SEL      <= '0'; -- 0 = 3.3V at sdcard   
 	SD_CMD_DIR  <= '1'; -- MOSI FPGA output
@@ -339,6 +348,18 @@ begin
 	-- HDMI_I2S(0) <= i2s_D_o;
 
 
+	process(clock_input)
+	begin
+		if (intercept = '1') then
+			intercept_joy <= "111111";
+	 		JOYX_SEL_O    <= '1';
+		else
+			intercept_joy <= "000000";
+			JOYX_SEL_O    <= joy_select_o;
+		end if;
+	end process;
+
+
 	guest : component mist_top
 		port map
 		(
@@ -379,9 +400,9 @@ begin
 			VGA_B      => vga_blue(7 downto 2),
 
 			--JOYSTICKS
-			JOY1 	   => joya(5 downto 0),
-			JOY2 	   => joyb(5 downto 0),
-			JOY_SELECT => JOYX_SEL_O,
+			JOY1 	   => joy1 or intercept_joy,   -- Block joystick when OSD is active
+			JOY2 	   => joy2 or intercept_joy,   -- Block joystick when OSD is active
+			JOY_SELECT => joy_select_o,
 
 			--AUDIO
 			DAC_L      => dac_l,
@@ -441,8 +462,8 @@ begin
 			buttons => (0 => KEY(1), others => '1'),	-- 0 => OSD_button
 
 			-- Joysticks
-		--	joy1 => joya,
-		--	joy2 => joyb,
+			joy1 => joya,
+			joy2 => joyb,
 
 			-- UART
 			rxd  => rs232_rxd,

@@ -157,7 +157,7 @@ set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/target/demisti
 set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/target/demistify/jtframe_neptuno_io.v
 set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/target/demistify/jtframe_neptuno_joy.v
 set_global_assignment -name VHDL_FILE ../../../modules/jtframe/target/demistify/mc2_hid.vhd
-set_global_assignment -name VHDL_FILE ../../../modules/jtframe/hdl/keyboard/ps2_intf.vhd
+#set_global_assignment -name VHDL_FILE ../../../modules/jtframe/hdl/keyboard/ps2_intf.vhd
 #
 set_global_assignment -name SDC_FILE ../../../modules/jtframe/target/mist/mist_io.sdc
 set_global_assignment -name SYSTEMVERILOG_FILE ../../../modules/jtframe/target/mist/osd.sv
