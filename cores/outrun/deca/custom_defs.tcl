@@ -1,5 +1,6 @@
 ####################  CORE MACROS  #########################
 
+# Uncomment following line to enable the Line Framebuffer
 #set_global_assignment -name VERILOG_MACRO "JTFRAME_LF_BUFFER=1"
 
 # DeMiSTify also shares the MIST macro
