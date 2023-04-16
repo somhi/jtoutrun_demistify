@@ -1,7 +1,10 @@
 ####################  CORE MACROS  #########################
 
 # Uncomment following line to enable the Line Framebuffer
-#set_global_assignment -name VERILOG_MACRO "JTFRAME_LF_BUFFER=1"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_LF_BUFFER=1"
+set_global_assignment -name VERILOG_FILE  ../../../modules/jtframe/hdl/video/jtframe_lfbuf_line.v
+set_global_assignment -name VERILOG_FILE  ../../../modules/jtframe/target/deca/jtframe_lfbuf_ddr_deca.v
+set_global_assignment -name VERILOG_FILE  ../../../modules/jtframe/target/deca/jtframe_lfbuf_ddr_deca_ctrl.v
 
 # DeMiSTify also shares the MIST macro
 set_global_assignment -name VERILOG_MACRO "MIST=1"
