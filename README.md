@@ -13,7 +13,7 @@ This is a stripped down version of [jtcores](https://github.com/jotego/jtcores) 
 submodule jtframe is linked to my [fork](https://github.com/somhi/jtframe). I'm using branch demistify so make sure to checkout:
 
 ```
-cd modules/DeMiSTify/
+cd modules/jtframe/
 git checkout demistify
 ```
 
