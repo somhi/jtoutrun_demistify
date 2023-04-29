@@ -211,6 +211,7 @@ architecture RTL of deca_top is
 		port (
 			inclk0 : in std_logic;
 			c0     : out std_logic;
+			c1     : out std_logic;
 			locked : out std_logic
 		);
 	end component;
@@ -218,9 +219,9 @@ architecture RTL of deca_top is
 	-- VIDEO signals
 	signal vga_clk   : std_logic;
 	signal vga_blank : std_logic;
-	signal vga_x_r   : std_logic_vector(5 downto 0);
-	signal vga_x_g   : std_logic_vector(5 downto 0);
-	signal vga_x_b   : std_logic_vector(5 downto 0);
+	signal vga_x_r   : std_logic_vector(3 downto 0);
+	signal vga_x_g   : std_logic_vector(3 downto 0);
+	signal vga_x_b   : std_logic_vector(3 downto 0);
 	signal vga_x_hs  : std_logic;
 	signal vga_x_vs  : std_logic;
 
@@ -315,39 +316,50 @@ begin
 
 	-- DECA HDMI
 
-	-- -- HDMI CONFIG    
-	-- I2C_HDMI_Config_inst : I2C_HDMI_Config
-	-- port map(
-	-- 	iCLK        => MAX10_CLK1_50,
-	-- 	iRST_N      => reset_n, --reset_n, KEY(0)
-	-- 	I2C_SCLK    => HDMI_I2C_SCL,
-	-- 	I2C_SDAT    => HDMI_I2C_SDA,
-	-- 	HDMI_TX_INT => HDMI_TX_INT
-	-- );
+	-- HDMI CONFIG    
+	I2C_HDMI_Config_inst : I2C_HDMI_Config
+	port map(
+		iCLK        => MAX10_CLK1_50,
+		iRST_N      => reset_n, --reset_n, KEY(0)
+		I2C_SCLK    => HDMI_I2C_SCL,
+		I2C_SDAT    => HDMI_I2C_SDA,
+		HDMI_TX_INT => HDMI_TX_INT
+	);
 
-	-- -- PLL2
+	-- PLL2
 	-- pll2_inst : pll2
 	-- port map (
-	--	inclk0		=> MAX10_CLK1_50,
-	--	c0			=> vga_clk,		
-	--	locked		=> open
+	-- 	inclk0		=> MAX10_CLK1_50,
+	-- 	c0			=> vga_clk,		
+	-- 	--c1			=> vga_clk,		
+	-- 	locked		=> open
 	-- );
 
-	-- --  HDMI VIDEO   
-	-- HDMI_TX_CLK <= vga_clk;
-	-- HDMI_TX_DE  <= not vga_blank;		-- vga_de;
-	-- HDMI_TX_HS  <= vga_x_hs;
-	-- HDMI_TX_VS  <= vga_x_vs;
-	-- HDMI_TX_D   <= vga_x_r & vga_x_r(4 downto 3) & vga_x_g & vga_x_g(4 downto 3) & vga_x_b & vga_x_b(4 downto 3);
-	-- --HDMI_TX_HS  <= vga_hsync;
-	-- --HDMI_TX_VS  <= vga_vsync;
-	-- --HDMI_TX_D   <= vga_red(7 downto 2)&vga_red(7 downto 6)&vga_green(7 downto 2)&vga_green(7 downto 6)&vga_blue(7 downto 2)&vga_blue(7 downto 6);
+	--  HDMI VIDEO   
+	HDMI_TX_CLK <= vga_clk;
+	--HDMI_TX_DE  <= not vga_blank;		-- vga_de;
+	HDMI_TX_DE  <= '1';		-- vga_de;
 
-	-- --  HDMI AUDIO   
-	-- HDMI_MCLK   <= i2s_Mck_o;
-	-- HDMI_SCLK   <= i2s_Sck_o; -- lr*2*16
-	-- HDMI_LRCLK  <= i2s_Lr_o;
-	-- HDMI_I2S(0) <= i2s_D_o;
+	-- tested with DE=1 & clk24 vga_clk
+	-- tested with DE=1 & clk48 vga_clk
+	-- tested with DE=1 & c0 vga_clk
+	-- tested with DE=1 & c1 vga_clk
+	HDMI_TX_HS  <= vga_x_hs;
+	HDMI_TX_VS  <= vga_x_vs;
+	HDMI_TX_D   <= vga_x_r & vga_x_r & vga_x_g & vga_x_g & vga_x_b & vga_x_b;
+
+	-- tested with DE=1 & c0 vga_clk
+	-- tested with DE=1 & c1 vga_clk
+	-- HDMI_TX_HS  <= vga_hsync;					
+	-- HDMI_TX_VS  <= vga_vsync;
+	-- HDMI_TX_D   <= vga_red&vga_green&vga_blue;
+
+
+	--  HDMI AUDIO   
+	HDMI_MCLK   <= i2s_Mck_o;
+	HDMI_SCLK   <= i2s_Sck_o; -- lr*2*16
+	HDMI_LRCLK  <= i2s_Lr_o;
+	HDMI_I2S(0) <= i2s_D_o;
 
 
 	process(clock_input)
@@ -400,6 +412,15 @@ begin
 			VGA_R      => vga_red(7 downto 2),
 			VGA_G      => vga_green(7 downto 2),
 			VGA_B      => vga_blue(7 downto 2),
+
+			--HDMI
+			RED_x      => vga_x_r,
+			GREEN_x    => vga_x_g,
+			BLUE_x     => vga_x_b,
+			HS_x       => vga_x_hs,
+			VS_x       => vga_x_vs,
+			VGA_BLANK  => vga_blank,
+			VGA_CLK    => vga_clk,
 
 			--JOYSTICKS
 			JOY1 	   => joy1 or intercept_joy,   -- Block joystick when OSD is active
