@@ -340,19 +340,18 @@ begin
 	--HDMI_TX_DE  <= not vga_blank;		-- vga_de;
 	HDMI_TX_DE  <= '1';		-- vga_de;
 
-	-- tested with DE=1 & clk24 vga_clk
-	-- tested with DE=1 & clk48 vga_clk
-	-- tested with DE=1 & c0 vga_clk
-	-- tested with DE=1 & c1 vga_clk
-	HDMI_TX_HS  <= vga_x_hs;
-	HDMI_TX_VS  <= vga_x_vs;
+
+	-- tested with DE=1 & vga_clk = clk24, clk48, c0, c1, MAX10_CLK1_50
+	HDMI_TX_HS  <= not vga_x_hs;
+	HDMI_TX_VS  <= not vga_x_vs;
 	HDMI_TX_D   <= vga_x_r & vga_x_r & vga_x_g & vga_x_g & vga_x_b & vga_x_b;
 
-	-- tested with DE=1 & c0 vga_clk
-	-- tested with DE=1 & c1 vga_clk
-	-- HDMI_TX_HS  <= vga_hsync;					
-	-- HDMI_TX_VS  <= vga_vsync;
-	-- HDMI_TX_D   <= vga_red&vga_green&vga_blue;
+	-- tested with DE=not vga_blank & vga_clk = c0(25.2), not hs/vs
+	-- tested with DE=not vga_blank & vga_clk = c1(50.4)
+	-- tested with DE=1 & vga_clk = c0 , c1, MAX10_CLK1_50
+	--HDMI_TX_HS  <= vga_hsync;					
+	--HDMI_TX_VS  <= vga_vsync;
+	--HDMI_TX_D   <= vga_red & vga_green & vga_blue;
 
 
 	--  HDMI AUDIO   

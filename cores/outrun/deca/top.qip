@@ -2,5 +2,7 @@
 set_global_assignment -name VHDL_FILE [file join $::quartus(qip_path) deca_top.vhd]
 #
 set_global_assignment -name QIP_FILE [file join $::quartus(qip_path) pll2/pll2.qip]
+#
+set_global_assignment -name QIP_FILE [file join $::quartus(qip_path) deca-ddr3/ddr3.qip]
 
 
