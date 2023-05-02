@@ -232,9 +232,9 @@ architecture RTL of deca_top is
 	-- VIDEO signals
 	signal vga_clk   : std_logic;
 	signal vga_de 	 : std_logic;
-	signal vga_x_r   : std_logic_vector(4 downto 0);
-	signal vga_x_g   : std_logic_vector(4 downto 0);
-	signal vga_x_b   : std_logic_vector(4 downto 0);
+	signal vga_x_r   : std_logic_vector(5 downto 0);
+	signal vga_x_g   : std_logic_vector(5 downto 0);
+	signal vga_x_b   : std_logic_vector(5 downto 0);
 	signal vga_x_hs  : std_logic;
 	signal vga_x_vs  : std_logic;
 
@@ -424,12 +424,11 @@ begin
 
 	HDMI_TX_HS  <= vga_x_hs;
 	HDMI_TX_VS  <= vga_x_vs;
-	HDMI_TX_D   <= vga_x_r & vga_x_r(4 downto 2) & vga_x_g & vga_x_g(4 downto 2) & vga_x_b & vga_x_b(4 downto 2);
+	HDMI_TX_D   <= vga_x_r & vga_x_r(4 downto 3) & vga_x_g & vga_x_g(4 downto 3) & vga_x_b & vga_x_b(4 downto 3);
 
 	-- HDMI_TX_HS  <= vga_hsync;					
 	-- HDMI_TX_VS  <= vga_vsync;
 	-- HDMI_TX_D   <= vga_red(7 downto 2) & vga_red(7 downto 6) & vga_green(7 downto 2)  & vga_green(7 downto 6) & vga_blue(7 downto 2)  & vga_blue(7 downto 6);
-
 
 	--  HDMI AUDIO   
 	HDMI_MCLK   <= i2s_Mck_o;
