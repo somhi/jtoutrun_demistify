@@ -65,3 +65,33 @@ set_global_assignment -name VERILOG_MACRO "SEPARATOR="
 set_global_assignment -name VERILOG_MACRO "SND_START='hC0000"
 
 set_global_assignment -name VERILOG_MACRO "TARGET=demistify"
+
+
+
+
+##DDRAM
+
+
+
+
+
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[0] -to ddram_dq[0]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[0] -to ddram_dq[1]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[0] -to ddram_dq[2]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[0] -to ddram_dq[3]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[0] -to ddram_dq[4]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[0] -to ddram_dq[5]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[0] -to ddram_dq[6]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[0] -to ddram_dq[7]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[1] -to ddram_dq[8]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[1] -to ddram_dq[9]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[1] -to ddram_dq[10]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[1] -to ddram_dq[11]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[1] -to ddram_dq[12]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[1] -to ddram_dq[13]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[1] -to ddram_dq[14]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[1] -to ddram_dq[15]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[0] -to ddram_dm[0]
+set_instance_assignment -name DQ_GROUP 9 -from ddram_dqs_p[1] -to ddram_dm[1]
+
+

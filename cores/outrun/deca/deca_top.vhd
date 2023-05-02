@@ -8,6 +8,9 @@ use work.demistify_config_pkg.all;
 -------------------------------------------------------------------------
 
 entity deca_top is
+	generic (
+		DECA_KEYB: natural := 2  -- 1=PS2 INOUT, 2= USB LOW SPEED (BETA)
+	);
 	port (
 		ADC_CLK_10    : in std_logic;
 		MAX10_CLK1_50 : in std_logic;
@@ -97,8 +100,18 @@ entity deca_top is
 		I2S_D            : out std_logic;
 
 		--Switches 
-		SW 			: in std_logic_vector(1 downto 0)
+		SW 			: in std_logic_vector(1 downto 0);
+		-- Toggle leds in USB keyboard SW[0] LedCaps	SW[1] LedNum
 
+		--TUSB1210
+		USB_CLKIN 	: in std_logic;     	--60MHz from ULPI
+		USB_FAULT_n	: in std_logic;    		--Overcurrent
+		USB_DATA 	: inout std_logic_vector(7 downto 0);
+		USB_NXT 	: in std_logic;
+		USB_DIR 	: in std_logic;
+		USB_STP 	: out std_logic;
+		USB_RESET_n : out std_logic;    	--Fixed to High
+		USB_CS 		: out std_logic        	--Fixed to High
 	);
 END entity;
 
@@ -207,23 +220,56 @@ architecture RTL of deca_top is
 		);
 	end component;
 
-	component pll2
-		port (
-			inclk0 : in std_logic;
-			c0     : out std_logic;
-			c1     : out std_logic;
-			locked : out std_logic
-		);
-	end component;
+	-- component pll2
+	-- 	port (
+	-- 		inclk0 : in std_logic;
+	-- 		c0     : out std_logic;
+	-- 		c1     : out std_logic;
+	-- 		locked : out std_logic
+	-- 	);
+	-- end component;
 
 	-- VIDEO signals
 	signal vga_clk   : std_logic;
 	signal vga_de 	 : std_logic;
-	signal vga_x_r   : std_logic_vector(3 downto 0);
-	signal vga_x_g   : std_logic_vector(3 downto 0);
-	signal vga_x_b   : std_logic_vector(3 downto 0);
+	signal vga_x_r   : std_logic_vector(4 downto 0);
+	signal vga_x_g   : std_logic_vector(4 downto 0);
+	signal vga_x_b   : std_logic_vector(4 downto 0);
 	signal vga_x_hs  : std_logic;
 	signal vga_x_vs  : std_logic;
+
+	-- USB ULPI KEYBOARD
+	signal USB_CLK_PHASE  : std_logic;
+	signal USB_PLL_LOCKED : std_logic;
+	signal PS2_KEYBOARD_CLK_USB : std_logic := '1';
+	signal PS2_KEYBOARD_DAT_USB : std_logic := '1';
+
+	component PLL_PHASE90
+		port (
+			inclk0 : in std_logic;
+			c0     : out std_logic;
+			locked : out std_logic
+		);
+	end component;
+
+	-- https://github.com/TheSonders/USBKeyboard/blob/main/ULPI_PS2_PUBLIC.v
+	component ULPI_PS2
+		port (
+			clk 		: in std_logic;
+			LedNum 		: in std_logic;
+			LedCaps 	: in std_logic;
+			LedScroll 	: in std_logic;
+			PS2data 	: out std_logic;
+			PS2clock 	: out std_logic;
+			FAULT_n 	: in std_logic;
+			DATA 		: inout std_logic_vector  (7 downto 0);
+			NXT 		: in std_logic;
+			DIR 		: in std_logic;
+			STP 		: out std_logic;
+			RESET_n 	: out std_logic;
+			CS 			: out std_logic
+		);
+	end component;
 
 	signal act_led : std_logic;
 
@@ -250,10 +296,48 @@ begin
 	ps2_mouse_clk_in <= PS2_MOUSE_CLK;
 	PS2_MOUSE_CLK    <= '0' when ps2_mouse_clk_out = '0' else 'Z';
 
-	ps2_keyboard_dat_in <= PS2_KEYBOARD_DAT;
-	PS2_KEYBOARD_DAT    <= '0' when ps2_keyboard_dat_out = '0' else 'Z';
-	ps2_keyboard_clk_in <= PS2_KEYBOARD_CLK;
-	PS2_KEYBOARD_CLK    <= '0' when ps2_keyboard_clk_out = '0' else 'Z';
+	-- DECA_KEYB:  1=PS2 INOUT, 2= PS2 & USB LOW SPEED
+	KEYBOARD_1 : if DECA_KEYB = 1 generate -- KEYB PS2 INOUT
+		ps2_keyboard_dat_in <= PS2_KEYBOARD_DAT;
+		PS2_KEYBOARD_DAT    <= '0' when ps2_keyboard_dat_out = '0' else 'Z';
+		ps2_keyboard_clk_in <= PS2_KEYBOARD_CLK;
+		PS2_KEYBOARD_CLK    <= '0' when ps2_keyboard_clk_out = '0' else 'Z';
+		USB_PLL_LOCKED      <= '1';
+	end generate KEYBOARD_1;
+
+	KEYBOARD_2 : if DECA_KEYB = 2 generate -- KEYB USB LOW SPEED 
+		ps2_keyboard_dat_in <= PS2_KEYBOARD_DAT_USB;
+--		PS2_KEYBOARD_DAT    <= '0' when ps2_keyboard_dat_out = '0' else 'Z';
+		ps2_keyboard_clk_in <= PS2_KEYBOARD_CLK_USB;
+--		PS2_KEYBOARD_CLK    <= '0' when ps2_keyboard_clk_out = '0' else 'Z';
+	
+		-- PLL ULPI_PS2
+		PLL_PHASE90_inst : PLL_PHASE90
+		port map (
+			inclk0		=> USB_CLKIN,
+			c0			=> USB_CLK_PHASE,		
+			locked		=> USB_PLL_LOCKED
+		);
+
+		-- ULPI_PS2
+		ULPI_PS2_inst : ULPI_PS2
+		port map (
+			clk 		=> USB_CLK_PHASE,
+			LedNum 		=> SW(1),
+			LedCaps 	=> SW(0),
+			LedScroll 	=> '0',
+			PS2data 	=> PS2_KEYBOARD_DAT_USB,
+			PS2clock 	=> PS2_KEYBOARD_CLK_USB,
+			FAULT_n 	=> USB_FAULT_n,
+			DATA 		=> USB_DATA,
+			NXT 		=> USB_NXT,
+			DIR 		=> USB_DIR,
+			STP 		=> USB_STP,
+			RESET_n 	=> USB_RESET_n,
+			CS 			=> USB_CS
+		);
+	end generate KEYBOARD_2;
+
 	
 	-- OSD joystick
 	-- JOYX_SEL_O          <= '1';
@@ -276,7 +360,6 @@ begin
 	VGA_B       <= vga_blue(7 downto 4);
 	VGA_HS      <= vga_hsync;
 	VGA_VS      <= vga_vsync;
-
 
 	-- DECA AUDIO CODEC
 	RESET_DELAY_n <= reset_n;
@@ -338,20 +421,14 @@ begin
 	--  HDMI VIDEO   
 	HDMI_TX_CLK <= vga_clk;
 	HDMI_TX_DE  <= vga_de;
-	--HDMI_TX_DE  <= '1';		-- vga_de;
 
-
-	-- tested with DE=1 & vga_clk = clk24, clk48, c0, c1, MAX10_CLK1_50
 	HDMI_TX_HS  <= vga_x_hs;
 	HDMI_TX_VS  <= vga_x_vs;
-	HDMI_TX_D   <= vga_x_r & vga_x_r & vga_x_g & vga_x_g & vga_x_b & vga_x_b;
+	HDMI_TX_D   <= vga_x_r & vga_x_r(4 downto 2) & vga_x_g & vga_x_g(4 downto 2) & vga_x_b & vga_x_b(4 downto 2);
 
-	-- tested with DE=not vga_blank & vga_clk = c0(25.2), not hs/vs
-	-- tested with DE=not vga_blank & vga_clk = c1(50.4)
-	-- tested with DE=1 & vga_clk = c0 , c1, MAX10_CLK1_50
-	--HDMI_TX_HS  <= vga_hsync;					
-	--HDMI_TX_VS  <= vga_vsync;
-	--HDMI_TX_D   <= vga_red & vga_green & vga_blue;
+	-- HDMI_TX_HS  <= vga_hsync;					
+	-- HDMI_TX_VS  <= vga_vsync;
+	-- HDMI_TX_D   <= vga_red(7 downto 2) & vga_red(7 downto 6) & vga_green(7 downto 2)  & vga_green(7 downto 6) & vga_blue(7 downto 2)  & vga_blue(7 downto 6);
 
 
 	--  HDMI AUDIO   
@@ -361,6 +438,7 @@ begin
 	HDMI_I2S(0) <= i2s_D_o;
 
 
+	--  Joystick intercept signal
 	process(clock_input)
 	begin
 		if (intercept = '1') then
@@ -457,7 +535,7 @@ begin
 		)
 		port map (
 			clk       => MAX10_CLK1_50,
-			reset_in  => KEY(0),						--reset_in  when 0
+			reset_in  => KEY(0) and USB_PLL_LOCKED,		--reset_in  when 0
 			reset_out => reset_n,						--reset_out when 0
 
 			-- SPI signals
