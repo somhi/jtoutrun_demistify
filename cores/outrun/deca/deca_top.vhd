@@ -337,7 +337,7 @@ architecture RTL of deca_top is
 	signal ddram_clk 			:	STD_LOGIC;
 	signal ddram_busy 			:	STD_LOGIC;
 	signal ddram_burstcnt		:	STD_LOGIC_VECTOR(7 DOWNTO 0);
-	signal ddram_addr			:	STD_LOGIC_VECTOR(31 DOWNTO 3);
+	signal ddram_addr			:	STD_LOGIC_VECTOR(28 DOWNTO 0);
 	signal ddram_dout			:	STD_LOGIC_VECTOR(63 DOWNTO 0);
 	signal ddram_dout_ready		:	STD_LOGIC;
 	signal ddram_rd 			:	STD_LOGIC;
@@ -671,7 +671,7 @@ begin
 
 	ddr3_inst : component ddr3
 	port map (
-	  pll_ref_clk => clk_rom,		-- ddram_clk = clk_rom	--to be confirmed, MAX10_CLK1_50
+	  pll_ref_clk => ddram_clk,		--to be confirmed   -- ddram_clk ?  MAX10_CLK1_50
 	  global_reset_n => not rst,
 	  soft_reset_n => not rst,
 	  afi_clk => open,
@@ -697,7 +697,7 @@ begin
 
 	  avl_ready => ddram_busy,
 	  avl_burstbegin => '1',					--to be confirmed
-	  avl_addr => ddram_addr(28 downto 3),		--[25:0] => [31:3] needs to be adapted
+	  avl_addr => ddram_addr(25 downto 0),		--[25:0] => [28:0] needs to be adapted
 	  avl_rdata_valid => ddram_dout_ready,		--to be confirmed
 	  avl_rdata => ddram_dout,
 	  avl_wdata => ddram_din,
@@ -706,7 +706,7 @@ begin
 	  avl_write_req => ddram_we,
 	  avl_size => '0' & ddram_burstcnt,			--[8:0] => [7:0] needs to be adapted
 
-	-- ddram_clk   not used output signal from jtframe_lfbuf_ddr_deca_ctrl  
+	-- ddram_clk   not used output signal from jtframe_lfbuf_ddr_deca_ctrl   (ddram_clk = clk_rom)
 
 	  local_init_done => open,
 	  local_cal_success => open,

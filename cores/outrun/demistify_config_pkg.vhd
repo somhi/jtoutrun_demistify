@@ -89,7 +89,7 @@ constant demistify_serialdebug : std_logic := '0';
 			ddram_clk 			:	OUT STD_LOGIC;
 			ddram_busy 			:	IN STD_LOGIC;
 			ddram_burstcnt		:	OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-			ddram_addr			:	OUT STD_LOGIC_VECTOR(31 DOWNTO 3);
+			ddram_addr			:	OUT STD_LOGIC_VECTOR(28 DOWNTO 0);
 			ddram_dout			:	IN STD_LOGIC_VECTOR(63 DOWNTO 0);
 			ddram_dout_ready	:	IN STD_LOGIC;
 			ddram_rd 			:	OUT STD_LOGIC;
