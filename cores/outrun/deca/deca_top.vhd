@@ -99,6 +99,23 @@ entity deca_top is
 		I2S_LR           : out std_logic;
 		I2S_D            : out std_logic;
 
+		--DDR3
+		ddram_a			: out std_logic_vector(14 downto 0);
+		ddram_ba		: out std_logic_vector(2 downto 0);
+		ddram_ras_n		: out std_logic_vector(0 downto 0);
+		ddram_cas_n		: out std_logic_vector(0 downto 0);
+		ddram_we_n		: out std_logic_vector(0 downto 0);
+		ddram_dm		: out std_logic_vector(1 downto 0);
+		ddram_dq		: inout std_logic_vector(15 downto 0);
+		ddram_dqs_p		: inout std_logic_vector(1 downto 0);
+		ddram_dqs_n		: inout std_logic_vector(1 downto 0);
+		ddram_clk_p		: inout std_logic_vector(0 downto 0);
+		ddram_clk_n		: inout std_logic_vector(0 downto 0);
+		ddram_cs_n		: out std_logic_vector(0 downto 0);
+		ddram_cke		: out std_logic_vector(0 downto 0);
+		ddram_odt		: out std_logic_vector(0 downto 0);
+		ddram_reset_n	: out std_logic;
+
 		--Switches 
 		SW 			: in std_logic_vector(1 downto 0);
 		-- Toggle leds in USB keyboard SW[0] LedCaps	SW[1] LedNum
@@ -271,9 +288,69 @@ architecture RTL of deca_top is
 		);
 	end component;
 
-	signal act_led : std_logic;
+	-- DDR3
+	component ddr3
+		port (
+		pll_ref_clk : in std_logic;
+		global_reset_n : in std_logic;
+		soft_reset_n : in std_logic;
+		afi_clk : out std_logic;
+		afi_half_clk : out std_logic;
+		afi_reset_n : out std_logic;
+		afi_reset_export_n : out std_logic;
+		mem_a : out std_logic_vector  (14 downto 0);
+		mem_ba : out std_logic_vector  (2 downto 0);
+		mem_ck : inout std_logic_vector  (0 downto 0);
+		mem_ck_n : inout std_logic_vector  (0 downto 0);
+		mem_cke : out std_logic_vector  (0 downto 0);
+		mem_cs_n : out std_logic_vector  (0 downto 0);
+		mem_dm : out std_logic_vector  (1 downto 0);
+		mem_ras_n : out std_logic_vector  (0 downto 0);
+		mem_cas_n : out std_logic_vector  (0 downto 0);
+		mem_we_n : out std_logic_vector  (0 downto 0);
+		mem_reset_n : out std_logic;
+		mem_dq : inout std_logic_vector  (15 downto 0);
+		mem_dqs : inout std_logic_vector  (1 downto 0);
+		mem_dqs_n : inout std_logic_vector  (1 downto 0);
+		mem_odt : out std_logic_vector  (0 downto 0);
+		avl_ready : out std_logic;
+		avl_burstbegin : in std_logic;
+		avl_addr : in std_logic_vector  (25 downto 0);
+		avl_rdata_valid : out std_logic;
+		avl_rdata : out std_logic_vector  (63 downto 0);
+		avl_wdata : in std_logic_vector  (63 downto 0);
+		avl_be : in std_logic_vector  (7 downto 0);
+		avl_read_req : in std_logic;
+		avl_write_req : in std_logic;
+		avl_size : in std_logic_vector  (8 downto 0);
+		local_init_done : out std_logic;
+		local_cal_success : out std_logic;
+		local_cal_fail : out std_logic;
+		pll_mem_clk : out std_logic;
+		pll_write_clk : out std_logic;
+		pll_locked : out std_logic;
+		pll_capture0_clk : out std_logic;
+		pll_capture1_clk : out std_logic
+	  );
+	end component;
 
-	signal osd_en : std_logic;
+	signal ddram_clk 			:	STD_LOGIC;
+	signal ddram_busy 			:	STD_LOGIC;
+	signal ddram_burstcnt		:	STD_LOGIC_VECTOR(7 DOWNTO 0);
+	signal ddram_addr			:	STD_LOGIC_VECTOR(31 DOWNTO 3);
+	signal ddram_dout			:	STD_LOGIC_VECTOR(63 DOWNTO 0);
+	signal ddram_dout_ready		:	STD_LOGIC;
+	signal ddram_rd 			:	STD_LOGIC;
+	signal ddram_din			:	STD_LOGIC_VECTOR(63 DOWNTO 0);
+	signal ddram_be				:	STD_LOGIC_VECTOR(7 DOWNTO 0);
+	signal ddram_we 			:	STD_LOGIC;
+
+	signal clk_rom  : std_logic;
+	signal rst		: std_logic;
+
+	--
+	signal act_led  : std_logic;
+	signal osd_en   : std_logic;
 
 	-- DECA target guest_top template signals
 	alias clock_input 	: std_logic is MAX10_CLK1_50;
@@ -509,6 +586,21 @@ begin
 			AUDIO_L    => sigma_l,
 			AUDIO_R    => sigma_r,
 
+			--DDR3
+			ddram_clk 			=> ddram_clk,
+			ddram_busy 			=> ddram_busy,
+			ddram_burstcnt		=> ddram_burstcnt,
+			ddram_addr			=> ddram_addr,
+			ddram_dout			=> ddram_dout,	
+			ddram_dout_ready	=> ddram_dout_ready,	
+			ddram_rd 			=> ddram_rd,	
+			ddram_din			=> ddram_din,	
+			ddram_be			=> ddram_be,
+			ddram_we 			=> ddram_we,
+
+			clk_rom	   => clk_rom,
+			rst		   => rst,
+
 			OSD_EN	   => osd_en
 
 			--PS2
@@ -574,5 +666,56 @@ begin
 		);
 
 	LED <= (0 => not act_led, others => '1');
+
+
+
+	ddr3_inst : component ddr3
+	port map (
+	  pll_ref_clk => clk_rom,		-- ddram_clk = clk_rom	--to be confirmed, MAX10_CLK1_50
+	  global_reset_n => not rst,
+	  soft_reset_n => not rst,
+	  afi_clk => open,
+	  afi_half_clk => open,
+	  afi_reset_n => open,
+	  afi_reset_export_n => open,
+
+	  mem_a => ddram_a,
+	  mem_ba => ddram_ba,
+	  mem_ck => ddram_clk_p,
+	  mem_ck_n => ddram_clk_n,
+	  mem_cke => ddram_cke,
+	  mem_cs_n => ddram_cs_n,
+	  mem_dm => ddram_dm,
+	  mem_ras_n => ddram_ras_n,
+	  mem_cas_n => ddram_cas_n,
+	  mem_we_n => ddram_we_n,
+	  mem_reset_n => ddram_reset_n,
+	  mem_dq => ddram_dq,
+	  mem_dqs => ddram_dqs_p,
+	  mem_dqs_n => ddram_dqs_n,
+	  mem_odt => ddram_odt,
+
+	  avl_ready => ddram_busy,
+	  avl_burstbegin => '1',					--to be confirmed
+	  avl_addr => ddram_addr(28 downto 3),		--[25:0] => [31:3] needs to be adapted
+	  avl_rdata_valid => ddram_dout_ready,		--to be confirmed
+	  avl_rdata => ddram_dout,
+	  avl_wdata => ddram_din,
+	  avl_be => ddram_be,
+	  avl_read_req => ddram_rd,
+	  avl_write_req => ddram_we,
+	  avl_size => '0' & ddram_burstcnt,			--[8:0] => [7:0] needs to be adapted
+
+	-- ddram_clk   not used output signal from jtframe_lfbuf_ddr_deca_ctrl  
+
+	  local_init_done => open,
+	  local_cal_success => open,
+	  local_cal_fail => open,
+	  pll_mem_clk => open,
+	  pll_write_clk => open,
+	  pll_locked => open,
+	  pll_capture0_clk => open,
+	  pll_capture1_clk => open
+	);
 
 end rtl;

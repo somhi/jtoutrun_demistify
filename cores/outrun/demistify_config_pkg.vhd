@@ -76,8 +76,8 @@ constant demistify_serialdebug : std_logic := '0';
 			VGA_DE		:	 OUT STD_LOGIC;
 			VGA_CLK		:	 OUT STD_LOGIC;
 
-			AUDIO_L  	: 	 OUT std_logic;
-			AUDIO_R  	: 	 OUT std_logic;
+			AUDIO_L  	: 	 OUT STD_LOGIC;
+			AUDIO_R  	: 	 OUT STD_LOGIC;
 
 			DAC_L       : 	 OUT signed(15 downto 0);
 			DAC_R       : 	 OUT signed(15 downto 0);
@@ -86,7 +86,21 @@ constant demistify_serialdebug : std_logic := '0';
 			JOY2		:	 IN STD_LOGIC_VECTOR(5 DOWNTO 0) := "111111";
 			JOY_SELECT	:	 OUT STD_LOGIC;
 
-			OSD_EN		:	 OUT STD_LOGIC
+			ddram_clk 			:	OUT STD_LOGIC;
+			ddram_busy 			:	IN STD_LOGIC;
+			ddram_burstcnt		:	OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+			ddram_addr			:	OUT STD_LOGIC_VECTOR(31 DOWNTO 3);
+			ddram_dout			:	IN STD_LOGIC_VECTOR(63 DOWNTO 0);
+			ddram_dout_ready	:	IN STD_LOGIC;
+			ddram_rd 			:	OUT STD_LOGIC;
+			ddram_din			:	OUT STD_LOGIC_VECTOR(63 DOWNTO 0);
+			ddram_be			:	OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+			ddram_we 			:	OUT STD_LOGIC;
+
+			clk_rom		:	OUT STD_LOGIC;
+			rst			:	OUT STD_LOGIC;
+
+			OSD_EN		:	OUT STD_LOGIC
 
 		);
 	END COMPONENT;
