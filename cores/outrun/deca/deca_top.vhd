@@ -344,6 +344,7 @@ architecture RTL of deca_top is
 	signal ddram_din			:	STD_LOGIC_VECTOR(63 DOWNTO 0);
 	signal ddram_be				:	STD_LOGIC_VECTOR(7 DOWNTO 0);
 	signal ddram_we 			:	STD_LOGIC;
+	signal ddram_burstbegin		:	STD_LOGIC;
 
 	signal avl_ready			:	STD_LOGIC;
 
@@ -599,6 +600,7 @@ begin
 			ddram_din			=> ddram_din,	
 			ddram_be			=> ddram_be,
 			ddram_we 			=> ddram_we,
+			ddram_burstbegin	=> ddram_burstbegin,
 
 			clk_rom	   => clk_rom,
 			rst		   => rst,
@@ -673,7 +675,7 @@ begin
 
 	ddr3_inst : component ddr3
 	port map (
-	  pll_ref_clk => MAX10_CLK1_50,		--to be confirmed   -- ddram_clk ?
+	  pll_ref_clk => MAX10_CLK1_50,		--to be confirmed   -- ddram_clk ? MAX10_CLK1_50
 	  global_reset_n => not rst,
 	  soft_reset_n => not rst,
 	  afi_clk => open,
@@ -698,9 +700,9 @@ begin
 	  mem_odt => ddram_odt,
 
 	  avl_ready => avl_ready,
-	  avl_burstbegin => ddram_rd and ddram_we,		
-	  avl_addr => ddram_addr(25 downto 0),		--[25:0] => [28:0] needs to be adapted
-	  avl_rdata_valid => ddram_dout_ready,		--to be confirmed
+	  avl_burstbegin => ddram_burstbegin,		
+	  avl_addr => ddram_addr(25 downto 0),		--[25:0] => [28:0]
+	  avl_rdata_valid => ddram_dout_ready,
 	  avl_rdata => ddram_dout,
 	  avl_wdata => ddram_din,
 	  avl_be => ddram_be,

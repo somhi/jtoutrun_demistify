@@ -96,6 +96,7 @@ constant demistify_serialdebug : std_logic := '0';
 			ddram_din			:	OUT STD_LOGIC_VECTOR(63 DOWNTO 0);
 			ddram_be			:	OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
 			ddram_we 			:	OUT STD_LOGIC;
+			ddram_burstbegin	:	OUT STD_LOGIC;
 
 			clk_rom		:	OUT STD_LOGIC;
 			rst			:	OUT STD_LOGIC;
