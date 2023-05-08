@@ -153,7 +153,7 @@ set_global_assignment -name SYSTEMVERILOG_FILE ../../../modules/jtframe/target/d
 set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/target/deca/jtframe_mist_base.v
 set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/target/deca/jtframe_demistify_joy.v
 set_global_assignment -name VHDL_FILE ../../../modules/jtframe/target/deca/mc2_hid_joy.vhd
-set_global_assignment -name SDC_FILE ../../../modules/jtframe/target/mist/mist_io.sdc
+set_global_assignment -name SDC_FILE ../../../modules/jtframe/target/deca/mist_io.sdc
 set_global_assignment -name SYSTEMVERILOG_FILE ../../../modules/jtframe/target/mist/osd.sv
 set_global_assignment -name QIP_FILE ../../../modules/jtframe/target/deca/pll6000/jtframe_pll6000.qip
 set_global_assignment -name QIP_FILE ../../../modules/jtframe/target/deca/pll6144/jtframe_pll6144.qip

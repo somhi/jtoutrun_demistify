@@ -441,6 +441,7 @@ begin
 	VGA_HS      <= vga_hsync;
 	VGA_VS      <= vga_vsync;
 
+
 	-- DECA AUDIO CODEC
 	RESET_DELAY_n <= reset_n;
 	-- Audio DAC DECA Output assignments
@@ -489,7 +490,7 @@ begin
 		HDMI_TX_INT => HDMI_TX_INT
 	);
 
-	-- PLL2
+	-- -- PLL2
 	-- pll2_inst : pll2
 	-- port map (
 	-- 	inclk0		=> MAX10_CLK1_50,
