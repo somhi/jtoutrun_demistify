@@ -16,3 +16,6 @@
 [submodule "modules/DeMiSTify"]
 	path = modules/DeMiSTify
 	url = https://github.com/robinsonb5/DeMiSTify.git
+[submodule "modules/jt89"]
+	path = modules/jt89
+	url = https://github.com/jotego/jt89
