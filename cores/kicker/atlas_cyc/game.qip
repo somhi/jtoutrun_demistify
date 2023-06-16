@@ -68,17 +68,15 @@ set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtfr
 set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_romrq.v
 set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram.v
 #
-set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram64_cyc.v
-set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram64_bank_cyc2.v
-set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram64_init_cyc2.v
+set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram64.v
+set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram64_bank.v
+#set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram64_bank_8MB.v
+set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram64_init.v
 set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram64_latch.v
 set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram64_rfsh.v
 #
-# set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram64_cyc.v
-# set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram64_bank_cyc.v
-# set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram64_init_cyc.v
-# set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram64_latch_cyc.v
-# set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram64_rfsh_cyc.v
+#set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram64_8MB.v   
+#set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram64_init_8MB.v    
 #
 set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sdram/jtframe_sdram_stats.v
 set_global_assignment -name VERILOG_FILE ../../../modules/jtframe/hdl/sound/hifi_1bit_dac.v

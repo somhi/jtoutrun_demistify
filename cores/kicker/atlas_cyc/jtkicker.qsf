@@ -173,8 +173,8 @@ set_global_assignment -name VERILOG_MACRO "DEMISTIFY_HDMI=1"
 set_global_assignment -name VERILOG_MACRO "DEMISTIFY_ATLAS_CYC=1"
 set_global_assignment -name VERILOG_MACRO "DEMISTIFY=1"
 
-set_global_assignment -name SEARCH_PATH "../hdl"
-set_global_assignment -name SEARCH_PATH "../../../modules/jtframe/hdl/inc"
+set_global_assignment -name SEARCH_PATH ../hdl
+set_global_assignment -name SEARCH_PATH ../../../modules/jtframe/hdl/inc
 #
 
 set_global_assignment -name VERILOG_MACRO "ATLAS_CYC=1"
@@ -196,7 +196,7 @@ set_global_assignment -name VERILOG_MACRO "JTFRAME_FLIP_RESET=1"
 set_global_assignment -name VERILOG_MACRO "JTFRAME_HEIGHT=224"
 set_global_assignment -name VERILOG_MACRO "JTFRAME_MCLK=49152"
 set_global_assignment -name VERILOG_MACRO "JTFRAME_MEMGEN="
-set_global_assignment -name VERILOG_MACRO "JTFRAME_MIST_DIPBASE=16"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_MIST_DIPBASE=8"
 set_global_assignment -name VERILOG_MACRO "JTFRAME_PLL6144="
 set_global_assignment -name VERILOG_MACRO "JTFRAME_PLL=jtframe_pll6144"
 set_global_assignment -name VERILOG_MACRO "JTFRAME_PLLSIM=10.173"
@@ -214,8 +214,11 @@ set_global_assignment -name VERILOG_MACRO "PCM_START='h1C000"
 set_global_assignment -name VERILOG_MACRO "SCR_START='h10000"
 set_global_assignment -name VERILOG_MACRO "TARGET=atlas_cyc"
 set_global_assignment -name VERILOG_MACRO "VIDEO_MODULE=jtkicker_video"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_RELEASE=1"
 
-set_global_assignment -name seed 1
+set_global_assignment -name SEED 1
+
+
 
 
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
